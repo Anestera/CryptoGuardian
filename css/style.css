@@ -223,7 +223,7 @@ footer {
   }
   .signup label{
     color: #253450;
-    cursor: pointer;
+    cursor: pointer;/* */
   }
   .signup label:hover{
     text-decoration: underline;
