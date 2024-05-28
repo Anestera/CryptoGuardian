@@ -9,7 +9,7 @@
 }
 .navbar{
     display: flex;
-    color: #000000;
+    color: #040000;
     height: 40px;
     align-items: center;
     top: 0;
@@ -244,3 +244,61 @@ footer {
   font-size: 20px;
 }
 
+
+.personal_area {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #183C66;
+}
+.personalarea_container {
+  width: 80%;
+  margin: 0 auto;
+}
+.profile-header {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+.profile-header img {
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  margin-right: 20px;
+}
+.profile-header h1 {
+  margin: 0;
+}
+.area_tabs {
+  display: flex;
+  justify-content: space-around;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.area_tabs button {
+  padding: 10px 20px;
+  background-color: #fff;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  transition: background-color 0.3s;
+}
+.area_tabs button:hover {
+  background-color: #e0e0e0;
+}
+.area_tabs button.active {
+  border-bottom: 2px solid #000;
+}
+.area-tab-content {
+  display: none;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.area-tab-content.active {
+  display: block;
+}
