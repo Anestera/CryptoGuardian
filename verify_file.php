@@ -41,7 +41,7 @@ $signature = base64_decode($signature_base64);
 
 $public_key_resource = openssl_pkey_get_public($public_key);
 $ok = openssl_verify($file_content, $signature, $public_key_resource, OPENSSL_ALGO_SHA256);
-openssl_free_key($public_key_resource);
+
 
 if ($ok == 1) {
     echo "Signature is valid.";

@@ -1,4 +1,5 @@
 <?php
+//скачивание файлов
 require 'db_connection.php';
 session_start();
 
@@ -6,6 +7,7 @@ if (!isset($_SESSION['user_id'])) {
     header("Location: sign.php");
     exit();
 }
+
 
 $file_id = $_GET['file_id'];
 $stmt = $pdo->prepare("SELECT filename, signed_file FROM files WHERE file_id = ?");

@@ -61,11 +61,6 @@ $documents = $documents_stmt->fetchAll(PDO::FETCH_ASSOC);
                 <input type="file" name="profile-picture" id="profile-picture-upload">
                 <input type="submit" value="Upload" class="btn upload-btn">
             </form>
-            <form action="generate_keys.php" method="post">
-                <label for="password" class="btn password-label">Enter Password to Generate Keys</label>
-                <input type="password" name="password" id="password" required>
-                <button type="submit" class="btn upload-btn">Generate Keys</button>
-            </form>
         </div>
 
         <div id="my-documents" class="area-tab-content">
