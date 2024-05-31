@@ -249,7 +249,7 @@ footer {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #183C66;
+  background-color: #fbfcfd;
 }
 .personalarea_container {
   width: 80%;
@@ -259,7 +259,7 @@ footer {
   display: flex;
   align-items: center;
   padding: 20px;
-  background-color: #fff;
+  background-color: #1D2735;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   margin-bottom: 20px;
 }
@@ -272,6 +272,13 @@ footer {
 }
 .profile-header h1 {
   margin: 0;
+  color: #B0C5EE;
+
+}
+.profile-header p {
+  
+  color: #B0C5EE;
+
 }
 .area_tabs {
   display: flex;
@@ -301,4 +308,53 @@ footer {
 }
 .area-tab-content.active {
   display: block;
+}
+.profile-picture-form {
+  display: flex;
+  margin-top: 20px;
+}
+
+.profile-picture-form label {
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.profile-picture-form input[type="file"] {
+  display: none;
+}
+
+.choose-file-btn {
+  background-color: #007bff;
+  color: #fff;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-right: 20px;
+}
+
+.choose-file-btn:hover {
+  background-color: #0056b3;
+}
+
+.btn {
+  background-color: #220755;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 10px;
+}
+
+.btn:hover {
+  background-color: #a9b0e5;
+}
+
+.logout-btn {
+  background-color: #dc3545;
+}
+
+.logout-btn:hover {
+  background-color: #c82333;
 }

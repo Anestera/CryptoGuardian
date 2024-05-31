@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['profile-picture'])) {
     $fileType = $_FILES['profile-picture']['type'];
     $fileContent = file_get_contents($file);
 
-    // Проверка, является ли файл изображением
+    // Проверка, является ли файл изображение
     if (strpos($fileType, 'image') === false) {
         die("Файл не является изображением.");
     }

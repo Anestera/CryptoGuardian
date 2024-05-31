@@ -2,7 +2,7 @@
 // Подключение к базе данных
 $host = 'localhost'; // Хост базы данных
 $port = '5432'; // Порт базы данных
-$dbname = 'Users';
+$dbname = 'Crypto';
 $username = 'postgres';
 $password = '123';
 

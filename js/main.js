@@ -1,6 +1,6 @@
 function openTab(evt, tabName) {
     var i, tabcontent, tablinks;
-    tabcontent = document.getElementsByClassName("tab-content");
+    tabcontent = document.getElementsByClassName("area-tab-content");
     for (i = 0; i < tabcontent.length; i++) {
         tabcontent[i].style.display = "none";
     }
@@ -37,5 +37,22 @@ function uploadFile() {
     })
     .catch(error => {
         console.error('Upload error:', error);
+    });
+}
+function logout() {
+    // Очистка сессии и перенаправление на страницу входа
+    fetch('logout.php', {
+        method: 'POST',
+        credentials: 'same-origin'
+    })
+    .then(response => {
+        if (response.ok) {
+            window.location.href = 'sign.php';
+        } else {
+            console.error('Logout failed');
+        }
+    })
+    .catch(error => {
+        console.error('Logout failed:', error);
     });
 }
