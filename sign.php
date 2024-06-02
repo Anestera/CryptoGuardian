@@ -1,39 +1,37 @@
 <?php
 require 'db_connection.php';
-require 'audit_log.php'; 
+require 'audit_log.php';
 
-// Обработка входа пользователя
 if (isset($_POST['login'])) {
     $email = $_POST['email'];
     $password = $_POST['password'];
 
     if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        // Получение хешированного пароля из базы данных
-        $stmt = $pdo->prepare("SELECT user_id, password FROM users WHERE email = ?");
+        $stmt = $pdo->prepare("SELECT user_id, password, email_verified FROM users WHERE email = ?");
         $stmt->execute([$email]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($user && password_verify($password, $user['password'])) {
-            // Устанавливаем user_id в сессии
-            session_start();
-            $_SESSION['user_id'] = $user['user_id'];
+            if (!$user['email_verified']) {
+                $login_error = "Email not verified. Please check your email.";
+            } else {
+                session_start();
+                $_SESSION['user_id'] = $user['user_id'];
 
-
-            log_action($user['user_id'], 'login', 'User logged in');
-
-            // Редирект на страницу личного кабинета
-            header("Location: personal_area.php");
-            exit();
+                log_action($user['user_id'], 'login', 'User logged in');
+                
+                header("Location: personal_area.php");
+                exit();
+            }
         } else {
-            // Неверный email или пароль
-            $login_error = "Неверный email или пароль.";
+            $login_error = "Invalid email or password.";
         }
     } else {
-        // Неверный формат email
-        $login_error = "Неверный формат email.";
+        $login_error = "Invalid email format.";
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

@@ -1,23 +1,21 @@
 <?php 
 require 'db_connection.php';
+require 'audit_log.php'; 
+require 'send_email.php'; 
 
-// Стартуем сессию
 session_start();
 
-// Обработка регистрации 
 if (isset($_POST['signup'])) { 
     $username = $_POST['username']; 
     $email = $_POST['email']; 
     $password = $_POST['password']; 
     $confirm_password = $_POST['confirm_password']; 
 
-    // Проверка минимальной длины пароля и содержания букв, цифр и знаков
     if (strlen($password) < 8 || !preg_match('/[A-Za-z]/', $password) || !preg_match('/\d/', $password) || !preg_match('/[^A-Za-z\d]/', $password)) {
         $registration_error = "Пароль должен содержать не менее 8 символов, включая буквы, цифры и специальные символы.";
     } elseif ($password !== $confirm_password) {
         $registration_error = "Пароли не совпадают.";
     } else {
-        // Проверка наличия пользователя с таким email в базе данных 
         $stmt = $pdo->prepare("SELECT COUNT(*) FROM users WHERE email = ?"); 
         $stmt->execute([$email]); 
         $count = $stmt->fetchColumn(); 
@@ -25,17 +23,15 @@ if (isset($_POST['signup'])) {
         if ($count > 0) { 
             $registration_error = "Пользователь с таким email уже зарегистрирован."; 
         } else { 
-            // Хеширование пароля 
             $hashed_password = password_hash($password, PASSWORD_DEFAULT); 
+            
+            // Generate a unique verification token
+            $verification_token = bin2hex(random_bytes(16));
+            
+            $stmt = $pdo->prepare("INSERT INTO users (username, email, password, verification_token) VALUES (?, ?, ?, ?)"); 
+            $stmt->execute([$username, $email, $hashed_password, $verification_token]); 
 
-            // Вставка новой записи в таблицу пользователей 
-            $stmt = $pdo->prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)"); 
-            $stmt->execute([$username, $email, $hashed_password]); 
-
-            // Получаем user_id только что зарегистрированного пользователя 
             $user_id = $pdo->lastInsertId(); 
-
-            // Генерация пары ключей
             $config = array(
                 "digest_alg" => "sha256",
                 "private_key_bits" => 2048,
@@ -45,21 +41,23 @@ if (isset($_POST['signup'])) {
             $res = openssl_pkey_new($config);
             openssl_pkey_export($res, $private_key);
             $public_key = openssl_pkey_get_details($res)['key'];
-
-            // Шифрование закрытого ключа
             $encryption_key = hash('sha256', $password, true);
             $iv = openssl_random_pseudo_bytes(16);
             $encrypted_private_key = openssl_encrypt($private_key, 'aes-256-cbc', $encryption_key, 0, $iv);
 
-            // Сохранение ключей в базе данных
             $stmt = $pdo->prepare("INSERT INTO user_keys (user_id, public_key, private_key, iv) VALUES (?, ?, ?, ?)");
             $stmt->execute([$user_id, $public_key, $encrypted_private_key, base64_encode($iv)]);
-
-            // Устанавливаем user_id в сессии 
+            
+            // Send verification email
+            $verification_link = "http://cryptoguardian/verify_email.php?token=$verification_token";
+            $subject = "Email Verification";
+            $message = "Hello $username,\n\nPlease click the link below to verify your email address:\n$verification_link";
+            send_email($email, $subject, $message); // Ensure send_email function is defined in send_email.php
+            
             $_SESSION['user_id'] = $user_id; 
-
-            // Редирект на страницу успешной регистрации или другие действия 
-            header("Location: personal_area.php"); 
+            log_action($user_id, 'register', 'User registered and verification email sent');
+            
+            header("Location: registration_success.php"); // Redirect to a page that informs the user to check their email
             exit(); 
         } 
     }
@@ -91,12 +89,8 @@ if (isset($_POST['signup'])) {
                     <input type="text" name="username" placeholder="Enter your nickname" required>
                     <input type="password" name="password" placeholder="Create a password" required>
                     <input type="password" name="confirm_password" placeholder="Confirm your password" required>
-                    <?php if (isset($registration_error)): ?> 
-                        <p class="error-message"><?php echo $registration_error; ?></p> 
-                    <?php endif; ?>
                     <input type="submit" class="button" name="signup" value="Sign up">
                 </form>
-
                 <div class="signup">
                     <span class="signup">Already have an account?
                         <label for="check"> <a href="sign.php">Login</a></label>
