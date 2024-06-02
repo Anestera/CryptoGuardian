@@ -29,6 +29,18 @@ $signed_by = $file_data['signed_by'];
 $signature_base64 = $file_data['signature'];
 $signature = base64_decode($signature_base64);
 
+
+if ($_SESSION['user_id'] != $signed_by) {
+    $check_stmt = $pdo->prepare("SELECT * FROM friends WHERE (user_id = ? AND friend_id = ?) OR (user_id = ? AND friend_id = ?)");
+    $check_stmt->execute([$_SESSION['user_id'], $signed_by, $signed_by, $_SESSION['user_id']]);
+    $is_friend = $check_stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$is_friend) {
+        die("Айяйяй, нельзя проверять неотправленные тебе документы.");
+    }
+}
+
+
 // Получаем открытый ключ отправителя из базы данных
 $stmt = $pdo->prepare("SELECT public_key FROM user_keys WHERE user_id = ?");
 $stmt->execute([$signed_by]);

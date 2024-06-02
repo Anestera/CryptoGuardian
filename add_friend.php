@@ -30,6 +30,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $insert_stmt = $pdo->prepare("INSERT INTO friends (user_id, friend_id) VALUES (?, ?)");
             $insert_stmt->execute([$user_id, $friend_id]);
 
+            $insert_stmt = $pdo->prepare("INSERT INTO friends (user_id, friend_id) VALUES (?, ?)");
+            $insert_stmt->execute([$friend_id, $user_id]);
+
             echo "Friend added successfully.";
         } else {
             echo "You are already friends.";
