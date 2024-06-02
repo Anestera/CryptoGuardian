@@ -20,6 +20,27 @@ if (isset($_GET['user_id']) && isset($_GET['expiry'])) {
             $stmt = $pdo->prepare("UPDATE users SET password = ?, reset_token_expiry = NULL WHERE user_id = ?");
             $stmt->execute([$hashed_password, $user['user_id']]);
 
+
+            // Генерация пары ключей
+            $config = array(
+                "digest_alg" => "sha256",
+                "private_key_bits" => 2048,
+                "private_key_type" => OPENSSL_KEYTYPE_RSA,
+            );
+
+            $res = openssl_pkey_new($config);
+            openssl_pkey_export($res, $private_key);
+            $public_key = openssl_pkey_get_details($res)['key'];
+
+            // Шифрование закрытого ключа
+            $encryption_key = hash('sha256', $new_password, true);
+            $iv = openssl_random_pseudo_bytes(16);
+            $encrypted_private_key = openssl_encrypt($private_key, 'aes-256-cbc', $encryption_key, 0, $iv);
+
+            // Обновление ключей
+            $stmt = $pdo->prepare("UPDATE user_keys SET public_key = ?, private_key = ?, iv = ? WHERE user_id = ?");
+            $stmt->execute([$public_key, $encrypted_private_key, base64_encode($iv), $user['user_id']]);
+ 
             header('Location: sign.php');
         }
     } else {

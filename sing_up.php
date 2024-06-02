@@ -11,8 +11,10 @@ if (isset($_POST['signup'])) {
     $password = $_POST['password']; 
     $confirm_password = $_POST['confirm_password']; 
 
-    // Проверка совпадения паролей
-    if ($password !== $confirm_password) {
+    // Проверка минимальной длины пароля и содержания букв, цифр и знаков
+    if (strlen($password) < 8 || !preg_match('/[A-Za-z]/', $password) || !preg_match('/\d/', $password) || !preg_match('/[^A-Za-z\d]/', $password)) {
+        $registration_error = "Пароль должен содержать не менее 8 символов, включая буквы, цифры и специальные символы.";
+    } elseif ($password !== $confirm_password) {
         $registration_error = "Пароли не совпадают.";
     } else {
         // Проверка наличия пользователя с таким email в базе данных 
@@ -25,11 +27,11 @@ if (isset($_POST['signup'])) {
         } else { 
             // Хеширование пароля 
             $hashed_password = password_hash($password, PASSWORD_DEFAULT); 
- 
+
             // Вставка новой записи в таблицу пользователей 
             $stmt = $pdo->prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)"); 
             $stmt->execute([$username, $email, $hashed_password]); 
- 
+
             // Получаем user_id только что зарегистрированного пользователя 
             $user_id = $pdo->lastInsertId(); 
 
@@ -52,16 +54,16 @@ if (isset($_POST['signup'])) {
             // Сохранение ключей в базе данных
             $stmt = $pdo->prepare("INSERT INTO user_keys (user_id, public_key, private_key, iv) VALUES (?, ?, ?, ?)");
             $stmt->execute([$user_id, $public_key, $encrypted_private_key, base64_encode($iv)]);
- 
+
             // Устанавливаем user_id в сессии 
             $_SESSION['user_id'] = $user_id; 
- 
+
             // Редирект на страницу успешной регистрации или другие действия 
             header("Location: personal_area.php"); 
             exit(); 
         } 
     }
-} 
+}
 ?>
 
 <!DOCTYPE html>
@@ -89,8 +91,12 @@ if (isset($_POST['signup'])) {
                     <input type="text" name="username" placeholder="Enter your nickname" required>
                     <input type="password" name="password" placeholder="Create a password" required>
                     <input type="password" name="confirm_password" placeholder="Confirm your password" required>
+                    <?php if (isset($registration_error)): ?> 
+                        <p class="error-message"><?php echo $registration_error; ?></p> 
+                    <?php endif; ?>
                     <input type="submit" class="button" name="signup" value="Sign up">
                 </form>
+
                 <div class="signup">
                     <span class="signup">Already have an account?
                         <label for="check"> <a href="sign.php">Login</a></label>
