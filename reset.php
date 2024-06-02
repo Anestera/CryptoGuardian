@@ -1,6 +1,7 @@
 <?php
 // Подключение к базе данных
 require 'db_connection.php';
+require 'audit_log.php';
 
 if (isset($_GET['user_id']) && isset($_GET['expiry'])) {
     $user_id = $_GET['user_id'];
@@ -20,6 +21,9 @@ if (isset($_GET['user_id']) && isset($_GET['expiry'])) {
             $stmt = $pdo->prepare("UPDATE users SET password = ?, reset_token_expiry = NULL WHERE user_id = ?");
             $stmt->execute([$hashed_password, $user['user_id']]);
 
+
+            log_action($user['user_id'], 'change_password', 'User changed password');
+            
 
             // Генерация пары ключей
             $config = array(

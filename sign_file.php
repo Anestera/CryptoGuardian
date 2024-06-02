@@ -1,5 +1,6 @@
 <?php
 require 'db_connection.php';
+require 'audit_log.php';
 session_start();
 
 if (!isset($_SESSION['user_id'])) {
@@ -59,6 +60,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['file']) && isset($_PO
                 $stmt->bindParam(4, $signature_base64);
                 $stmt->bindParam(5, $user_id); // signed_by указывает на того, кто подписал
                 $stmt->execute();
+
+
+                log_action($user_id, 'create_signature', "File signed: $filename");
 
                 echo "Файл успешно подписан и сохранен.";
             } else {

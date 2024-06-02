@@ -1,5 +1,6 @@
 <?php
 require 'db_connection.php';
+require 'audit_log.php'; 
 
 // Обработка входа пользователя
 if (isset($_POST['login'])) {
@@ -16,6 +17,9 @@ if (isset($_POST['login'])) {
             // Устанавливаем user_id в сессии
             session_start();
             $_SESSION['user_id'] = $user['user_id'];
+
+
+            log_action($user['user_id'], 'login', 'User logged in');
 
             // Редирект на страницу личного кабинета
             header("Location: personal_area.php");

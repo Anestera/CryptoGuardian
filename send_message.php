@@ -1,5 +1,6 @@
 <?php
 require 'db_connection.php';
+require 'audit_log.php';
 session_start();
 
 if (!isset($_SESSION['user_id'])) {
@@ -22,6 +23,7 @@ if ($message) {
     $stmt->execute([$user_id, $receiver_id, $message]);
     $message_id = $pdo->lastInsertId();
     echo "Message ID: $message_id\n";
+    log_action($user_id, 'send_message', "Sent message ID: $message_id to user ID: $receiver_id");
 }
 
 if ($file && $file['error'] === UPLOAD_ERR_OK) {
