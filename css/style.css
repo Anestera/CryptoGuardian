@@ -350,11 +350,3 @@ footer {
 .btn:hover {
   background-color: #a9b0e5;
 }
-
-.logout-btn {
-  background-color: #dc3545;
-}
-
-.logout-btn:hover {
-  background-color: #c82333;
-}
