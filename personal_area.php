@@ -106,7 +106,7 @@ $messages = $messages_stmt->fetchAll(PDO::FETCH_ASSOC);
             <form action="sign_file.php" method="post" enctype="multipart/form-data">
                 
                 <input type="file" name="file" id="file-upload" required>
-                <input type="password" name="password" id="password" required>
+                <input type="password" name="password" id="password" placeholder="Enter your account password" required>
                 <button type="submit" class="btn upload-btn">Upload and Sign</button>
             </form>
         </div>
@@ -143,7 +143,7 @@ $messages = $messages_stmt->fetchAll(PDO::FETCH_ASSOC);
             <h2>Add a Friend</h2>
             <form action="add_friend.php" method="post">
                 <input type="text" name="friend_username" placeholder="Enter friend's username" required>
-                <button type="submit">Add Friend</button>
+                <button type="submit" class="btn upload-btn" >Add Friend</button>
             </form>
 
             <h2>Send a Message</h2>
@@ -162,8 +162,8 @@ $messages = $messages_stmt->fetchAll(PDO::FETCH_ASSOC);
                     }
                     ?>
                 </select>
-                <input type="password" name="password" placeholder="Enter your password" required>
-                <button type="submit">Send</button>
+                <input class="mess_pass" type="password" name="password" placeholder="Enter your account password" required>
+                <button type="submit" class="btn upload-btn">Send</button>
             </form>
         </div>
 
