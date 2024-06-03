@@ -22,7 +22,6 @@ if ($message) {
     $stmt = $pdo->prepare("INSERT INTO messages (sender_id, receiver_id, message) VALUES (?, ?, ?)");
     $stmt->execute([$user_id, $receiver_id, $message]);
     $message_id = $pdo->lastInsertId();
-    echo "Message ID: $message_id\n";
     log_action($user_id, 'send_message', "Sent message ID: $message_id to user ID: $receiver_id");
 }
 

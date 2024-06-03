@@ -17,19 +17,7 @@ if (!$user) {
     die("Пользователь не найден.");
 }
 
-// Ensure the photo data is a string, not a resource
-$photo = '';
-if ($user['photo']) {
-    // Check if $user['photo'] is a string or resource
-    if (is_string($user['photo'])) {
-        $photo = 'data:image/jpeg;base64,' . base64_encode($user['photo']);
-    } else {
-        // If it's a resource, fetch its contents as a string
-        $photo = 'data:image/jpeg;base64,' . base64_encode(stream_get_contents($user['photo']));
-    }
-} else {
-    $photo = 'img/default-profile.png';
-}
+$photo = $user['photo'] ? 'data:image/jpeg;base64,' . base64_encode($user['photo']) : 'img/default-profile.png';
 
 // Получаем список документов пользователя
 $documents_stmt = $pdo->prepare("SELECT file_id, filename FROM files WHERE user_id = ?");
@@ -78,17 +66,12 @@ $messages = $messages_stmt->fetchAll(PDO::FETCH_ASSOC);
 
         <div id="personal-account" class="area-tab-content active">
             <h2>Personal Account</h2>
-            <form action="update_profile.php" method="post" enctype="multipart/form-data" class="profile-update-form">
-                <label for="username">Username:</label>
-                <input type="text" name="username" id="username" value="<?= htmlspecialchars($user['username']) ?>" required>
-                
-                <label for="email">Email:</label>
-                <input type="email" name="email" id="email" value="<?= htmlspecialchars($user['email']) ?>" required>
-                
-                <label for="profile-picture-upload" class="btn choose-file-btn">Choose File</label>
+            <p>Username: <?= htmlspecialchars($user['username']) ?></p>
+            <p>Email: <?= htmlspecialchars($user['email']) ?></p>
+            <form action="upload.php" method="post" enctype="multipart/form-data" class="profile-picture-form">
+            <label for="profile-picture-upload" class="btn choose-file-btn">Choose File</label>
                 <input type="file" name="profile-picture" id="profile-picture-upload">
-                
-                <input type="submit" value="Update Profile" class="btn upload-btn">
+                <input type="submit" value="Upload" class="btn upload-btn">
             </form>
         </div>
 
@@ -113,7 +96,6 @@ $messages = $messages_stmt->fetchAll(PDO::FETCH_ASSOC);
             <form action="sign_file.php" method="post" enctype="multipart/form-data">
                 
                 <input type="file" name="file" id="file-upload" required>
-                <label for="password" class="btn password-label">Enter Password</label>
                 <input type="password" name="password" id="password" required>
                 <button type="submit" class="btn upload-btn">Upload and Sign</button>
             </form>
