@@ -5,29 +5,39 @@ require 'audit_log.php';
 if (isset($_POST['login'])) {
     $email = $_POST['email'];
     $password = $_POST['password'];
+    $recaptchaResponse = $_POST['g-recaptcha-response'];
 
-    if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $stmt = $pdo->prepare("SELECT user_id, password, email_verified FROM users WHERE email = ?");
-        $stmt->execute([$email]);
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    // Verify reCAPTCHA
+    $secretKey = '6LeJzu8pAAAAAJl2NPcbD-Ta-o0cJvR5Jz0eRGl9';
+    $response = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=$secretKey&response=$recaptchaResponse");
+    $responseKeys = json_decode($response, true);
 
-        if ($user && password_verify($password, $user['password'])) {
-            if (!$user['email_verified']) {
-                $login_error = "Email not verified. Please check your email.";
+    if (intval($responseKeys["success"]) !== 1) {
+        $login_error = "Please complete the reCAPTCHA.";
+    } else {
+        if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $stmt = $pdo->prepare("SELECT user_id, password, email_verified FROM users WHERE email = ?");
+            $stmt->execute([$email]);
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($user && password_verify($password, $user['password'])) {
+                if (!$user['email_verified']) {
+                    $login_error = "Email not verified. Please check your email.";
+                } else {
+                    session_start();
+                    $_SESSION['user_id'] = $user['user_id'];
+
+                    log_action($user['user_id'], 'login', 'User logged in');
+                    
+                    header("Location: personal_area.php");
+                    exit();
+                }
             } else {
-                session_start();
-                $_SESSION['user_id'] = $user['user_id'];
-
-                log_action($user['user_id'], 'login', 'User logged in');
-                
-                header("Location: personal_area.php");
-                exit();
+                $login_error = "Invalid email or password.";
             }
         } else {
-            $login_error = "Invalid email or password.";
+            $login_error = "Invalid email format.";
         }
-    } else {
-        $login_error = "Invalid email format.";
     }
 }
 ?>
@@ -40,6 +50,7 @@ if (isset($_POST['login'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Join us</title>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 <body>
 <div class="wrapper_sign">
@@ -57,7 +68,8 @@ if (isset($_POST['login'])) {
         <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
             <input type="email" name="email" placeholder="Enter your email" required>
             <input type="password" name="password" placeholder="Enter your password" required>
-            <a href="forgot.php">Forgot password?</a>
+            <div class="g-recaptcha" data-sitekey="6LeJzu8pAAAAALJeNX1RFVKTvsAs8jXIsf3tCBe3"></div>
+            <a class = "forgot_q" href="forgot.php">Forgot password?</a>
             <input type="submit" class="button" name="login" value="Login">
         </form>
         <div class="signup">

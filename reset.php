@@ -48,10 +48,10 @@ if (isset($_GET['user_id']) && isset($_GET['expiry'])) {
             header('Location: sign.php');
         }
     } else {
-        echo "Неверный или просроченный токен.";
+        echo "<script>alert('Неверный или просроченный токен.');window.location.href = 'sign.php'</script>";
     }
 } else {
-    echo "Токен не указан.";
+    echo "<script>alert('Токен не указан.');window.location.href = 'sign.php'</script>";
 }
 ?>
 

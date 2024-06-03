@@ -15,11 +15,11 @@ if (isset($_GET['token'])) {
         
         log_action($user['user_id'], 'email_verified', 'User verified their email');
         
-        echo "Email successfully verified. You can now <a href='sign.php'>login</a>.";
+        echo "<script>alert('Email successfully verified. You can now login.');window.location.href = 'sign.php'</script>";
     } else {
-        echo "Invalid or expired token.";
+        echo "<script>alert('Invalid or expired token.');window.location.href = 'sign.php'</script>";
     }
 } else {
-    echo "No token provided.";
+    echo "<script>alert('No token provided.');window.location.href = 'sign.php'</script>";
 }
 ?>

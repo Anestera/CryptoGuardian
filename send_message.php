@@ -75,7 +75,8 @@ if ($file && $file['error'] === UPLOAD_ERR_OK) {
                 $stmt->execute([$file_id, $message_id]);
             }
 
-            echo "Message and file sent";
+            
+            echo "<script>alert('Message and file sent.');window.location.href = 'personal_area.php'</script>";
         } else {
             die("User key not found.");
         }
@@ -85,8 +86,8 @@ if ($file && $file['error'] === UPLOAD_ERR_OK) {
 } else if ($file) {
     die("File upload error: " . $file['error']);
 } else if ($message) {
-    echo "Message sent without file";
+    echo "<script>alert('Message sent without file.');window.location.href = 'personal_area.php'</script>";
 } else {
-    echo "No message or file sent";
+    echo "<script>alert('No message or file sent.');window.location.href = 'personal_area.php'</script>";
 }
 ?>

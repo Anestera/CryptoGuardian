@@ -58,13 +58,13 @@ $public_key_resource = openssl_pkey_get_public($public_key);
 $ok = openssl_verify($file_content, $signature, $public_key_resource, OPENSSL_ALGO_SHA256);
 
 if ($ok == 1) {
-    echo "Signature is valid.";
+    echo "<script>alert('Signature is valid.');window.location.href = 'personal_area.php'</script>";
     log_action($_SESSION['user_id'], 'verify_signature', "Verified signature for file: $filename");
 } elseif ($ok == 0) {
-    echo "Signature is invalid.";
+    echo "<script>alert('Signature is invalid.');window.location.href = 'personal_area.php'</script>";
     log_action($_SESSION['user_id'], 'verify_signature', "Failed to verify signature for file: $filename");
 } else {
-    echo "Error verifying signature.";
+    echo "<script>alert('Error verifying signature.');window.location.href = 'personal_area.php'</script>";
     log_action($_SESSION['user_id'], 'verify_signature', "Error verifying signature for file: $filename");
 }
 ?>

@@ -15,23 +15,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
         $expiry_time = time() + 3600; // Токен действителен в течение 1 часа
 
         // Сохранение времени окончания действия токена в базе данных
-        $stmt = $pdo->prepare("UPDATE users SET reset_token_expiry = TO_TIMESTAMP(?) WHERE user_id = ?");
+        $stmt = $pdo->prepare("UPDATE users SET reset_token_expiry = FROM_UNIXTIME(?) WHERE user_id = ?");
         $stmt->execute([$expiry_time, $user_id]);
 
         // Отправка письма пользователю
-        $reset_link = "http://CryptoGuardian/reset.php?user_id=$user_id&expiry=$expiry_time";
+        $reset_link = "http://cryptoguardianu.ru/reset.php?user_id=$user_id&expiry=$expiry_time";
         $subject = "Восстановление пароля";
         $message = "Для восстановления пароля перейдите по следующей ссылке: $reset_link";
-        $headers = "From: no-reply@yourdomain.com";
-        header('Location: sign.php');
+        $headers = "From: cryptoguardian-support@cryptoguardianu.ru";
 
         if (mail($email, $subject, $message, $headers)) {
-            echo "Письмо для восстановления пароля было отправлено на вашу электронную почту.";
+            echo "<script>alert('Письмо для восстановления пароля было отправлено на вашу электронную почту.');window.location.href = 'sign.php'</script>";
         } else {
-            echo "Не удалось отправить письмо. Попробуйте снова.";
+            echo "<script>alert('Не удалось отправить письмо. Попробуйте снова.');window.location.href = 'sign.php'</script>";
         }
     } else {
-        echo "Пользователь с такой электронной почтой не найден.";
+        echo "<script>alert('Пользователь с такой электронной почтой не найден.');window.location.href = 'sign.php'</script>";
     }
 }
 ?>
@@ -50,16 +49,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
     <img class="sign_img" src="img/sign_photo.png" alt="a">
     <a href="/" class="sign-link">CryptoGuardianU</a>
 </div>
-    <div class="container_sign">
-        <input type="checkbox" id="check">
-        <div class="login form">
-          <header>Password recovery</header>
-          <form action="" method="POST">
-          <input type="text" name="email" placeholder="Enter your email" required>
-          <input type="submit" name="send" class="button" value="Send">
-          </form>
-
-        </div>
+<div class="container_sign">
+    <input type="checkbox" id="check">
+    <div class="login form">
+        <header>Password recovery</header>
+        <form action="" method="POST">
+            <input type="text" name="email" placeholder="Enter your email" required>
+            <input type="submit" name="send" class="button" value="Send">
+        </form>
     </div>
+</div>
 </body>
 </html>

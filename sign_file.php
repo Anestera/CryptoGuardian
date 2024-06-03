@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['file']) && isset($_PO
 
                 log_action($user_id, 'create_signature', "File signed: $filename");
 
-                echo "Файл успешно подписан и сохранен.";
+                echo "<script>alert('Файл успешно подписан и сохранен.');window.location.href = 'personal_area.php'</script>";
             } else {
                 die("Не удалось найти закрытый ключ для пользователя.");
             }

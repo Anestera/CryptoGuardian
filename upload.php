@@ -3,8 +3,8 @@ require 'db_connection.php';
 session_start();
 
 if (!isset($_SESSION['user_id'])) {
- header("Location: sign.php");
- exit();
+    header("Location: sign.php");
+    exit();
 }
 
 // Обработка загрузки файла
@@ -14,10 +14,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['profile-picture'])) {
     $fileType = $_FILES['profile-picture']['type'];
     $fileContent = file_get_contents($file);
 
-    // Проверка, является ли файл изображение
+    // Проверка, является ли файл изображением
     if (strpos($fileType, 'image') === false) {
- die("Файл не является изображением.");
+        die("Файл не является изображением.");
     }
+
+    // Проверка размеров изображения (не более 2MB)
+    if ($_FILES['profile-picture']['size'] > 2 * 1024 * 1024) {
+        die("Размер файла слишком большой. Максимальный размер: 2MB.");
+    }
+
+    // Создание изображения из строки и проверка
+    $image = imagecreatefromstring($fileContent);
+    if (!$image) {
+        die("Ошибка обработки изображения.");
+    }
+    imagedestroy($image); // Освобождение памяти, используемой для изображения
 
     // Обновление фото в базе данных
     $stmt = $pdo->prepare("UPDATE users SET photo = ? WHERE user_id = ?");
@@ -26,6 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['profile-picture'])) {
     $stmt->execute();
 
     // Редирект на страницу личного кабинета
- header("Location: personal_area.php");
+    header("Location: personal_area.php");
+    exit();
 }
 ?>

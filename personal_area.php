@@ -17,7 +17,17 @@ if (!$user) {
     die("Пользователь не найден.");
 }
 
-$photo = $user['photo'] ? 'data:image/jpeg;base64,' . base64_encode($user['photo']) : 'img/default-profile.png';
+if ($user && !empty($user['photo'])) {
+    $photoContent = $user['photo'];
+
+    // Конвертация в base64
+    $photoBase64 = base64_encode($photoContent);
+    
+    // Отображение изображения
+    $photo = 'data:image/jpeg;base64,' . $photoBase64;
+}else {
+    $photo = 'img/default-profile.png';
+}
 
 // Получаем список документов пользователя
 $documents_stmt = $pdo->prepare("SELECT file_id, filename FROM files WHERE user_id = ?");
