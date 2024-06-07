@@ -21,7 +21,6 @@ body {
   left: 0;
   width: 100%;
   margin-top: 10px;
-  position: fixed;
 }
 .navbarlist {
   display: flex;
@@ -368,7 +367,7 @@ ul {
   list-style-type: none;
   padding: 0;
 }
-ul li {
+.mydoc_ulli {
   background-color: #f8f9fa;
   border: 1px solid #ccc;
   padding: 10px;

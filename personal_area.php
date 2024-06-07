@@ -79,7 +79,7 @@ $messages = $messages_stmt->fetchAll(PDO::FETCH_ASSOC);
             <p>Username: <?= htmlspecialchars($user['username']) ?></p>
             <p>Email: <?= htmlspecialchars($user['email']) ?></p>
             <form action="upload.php" method="post" enctype="multipart/form-data" class="profile-picture-form">
-            <label for="profile-picture-upload" class="btn choose-file-btn">Choose File</label>
+                <p>upload a profile photo:</p>
                 <input type="file" name="profile-picture" id="profile-picture-upload">
                 <input type="submit" value="Upload" class="btn upload-btn">
             </form>
@@ -88,9 +88,9 @@ $messages = $messages_stmt->fetchAll(PDO::FETCH_ASSOC);
         <div id="my-documents" class="area-tab-content">
             <h2>My Documents</h2>
             <?php if ($documents): ?>
-                <ul>
+                <ul class="mydoc_ulli">
                     <?php foreach ($documents as $doc): ?>
-                        <li>
+                        <li class="mydoc_ulli">
                             <?= htmlspecialchars($doc['filename']) ?>
                             <a href="download.php?file_id=<?= htmlspecialchars($doc['file_id']) ?>" class="btn download-btn">Download</a>
                         </li>
@@ -123,9 +123,9 @@ $messages = $messages_stmt->fetchAll(PDO::FETCH_ASSOC);
         <div id="my-messages" class="area-tab-content">
             <h2>My Messages</h2>
             <?php if ($messages): ?>
-                <ul>
+                <ul class="mydoc_ulli">
                     <?php foreach ($messages as $message): ?>
-                        <li>
+                        <li class="mydoc_ulli">
                             <strong>From:</strong> <?= htmlspecialchars($message['sender']) ?><br>
                             <strong>Message:</strong> <?= htmlspecialchars($message['message']) ?><br>
                             <?php if ($message['file_id']): ?>

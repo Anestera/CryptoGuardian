@@ -1,5 +1,5 @@
 <?php
-// Подключение к базе данных
+
 require 'db_connection.php';
 require 'audit_log.php';
 

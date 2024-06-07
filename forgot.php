@@ -1,5 +1,5 @@
 <?php
-// Подключение к базе данных 
+ 
 require 'db_connection.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
         $user_id = $user['user_id'];
         $expiry_time = time() + 3600; // Токен действителен в течение 1 часа
 
-        // Сохранение времени окончания действия токена в базе данных
+        
         $stmt = $pdo->prepare("UPDATE users SET reset_token_expiry = FROM_UNIXTIME(?) WHERE user_id = ?");
         $stmt->execute([$expiry_time, $user_id]);
 

@@ -7,7 +7,6 @@ if (isset($_POST['login'])) {
     $password = $_POST['password'];
     $recaptchaResponse = $_POST['g-recaptcha-response'];
 
-    // Verify reCAPTCHA
     $secretKey = '6LeJzu8pAAAAAJl2NPcbD-Ta-o0cJvR5Jz0eRGl9';
     $response = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=$secretKey&response=$recaptchaResponse");
     $responseKeys = json_decode($response, true);
